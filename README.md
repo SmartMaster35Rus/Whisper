@@ -43,7 +43,3 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 ## Author
 
 This repository is maintained by [yasaxil](https://github.com/yasaxil). If you have any questions or suggestions, feel free to reach out.
-
----
-
-Feel free to customize the description according to your specific needs and add any additional sections or information that you find relevant. Good luck with your project!
