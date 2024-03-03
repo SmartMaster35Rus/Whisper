@@ -1,5 +1,3 @@
-Привет! Вот пример описания для файла README.md для вашего репозитория "whisper large-v3" на GitHub:
-
 # Whisper Large-v3
 
 This repository is dedicated to Whisper Large-v3, a powerful tool for high-quality conversion of audio messages to text. It provides unique settings and configurations to ensure accurate and precise conversion of *.ogg or *.mp3 files to *.text format.
