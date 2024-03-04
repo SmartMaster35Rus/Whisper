@@ -53,6 +53,22 @@ f.write(filename[:-4] + ': \n"' + result["text"] + '"\n')
 
 Make sure to refer to the [documentation](https://github.com/yasaxil) for detailed instructions and additional examples.
 
+## My optimal setting whisper config
+
+```python
+# Настройки конфигурации для модели whisper
+whisper_config = {
+    "model": "large-v3",
+    "temperature": 0,
+    "patience": 10,
+    "suppress_tokens": -1,
+    "temperature_increment_on_fallback": 0.2,
+    "compression_ratio_threshold": 2.4,
+    "logprob_threshold": -1,
+    "no_speech_threshold": 0.6,
+    "fp16": False
+}
+```
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). For more information, please see the [LICENSE](LICENSE) file.
