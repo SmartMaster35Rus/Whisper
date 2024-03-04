@@ -14,8 +14,11 @@ This repository is dedicated to Whisper Large-v3, a powerful tool for high-quali
 To use Whisper Large-v3, follow these steps:
 
 "pip install -U openai-whisper"
+
 "pip install git+https://github.com/openai/whisper.git "
+
 "pip install --upgrade --no-deps --force-reinstall git+https://github.com/openai/whisper.git"
+
 "pip install setuptools-rust"
 
 1. Clone the repository to your local machine.
