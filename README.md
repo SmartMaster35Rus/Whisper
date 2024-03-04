@@ -13,6 +13,11 @@ This repository is dedicated to Whisper Large-v3, a powerful tool for high-quali
 
 To use Whisper Large-v3, follow these steps:
 
+"pip install -U openai-whisper"
+"pip install git+https://github.com/openai/whisper.git "
+"pip install --upgrade --no-deps --force-reinstall git+https://github.com/openai/whisper.git"
+"pip install setuptools-rust"
+
 1. Clone the repository to your local machine.
 2. Install the required dependencies.
 3. Configure the settings according to your specific requirements.
@@ -23,15 +28,24 @@ To use Whisper Large-v3, follow these steps:
 Here's how you can use Whisper Large-v3 in your projects:
 
 ```python
-import whisper_large_v3
+import whisper
 
-# Load audio file
-audio = whisper_large_v3.load_audio("path/to/audio.file")
+# Получаем список всех файлов .ogg в папке
+ogg_files = [f for f in os.listdir(directory) if f.endswith(".ogg")]
 
-# Convert audio to text
-text = whisper_large_v3.convert_to_text(audio)
+# Загружаем базовую модель
+model = whisper.load_model("large-v3")
 
-# Process the text further or save it to a file
+# Конвертируем .ogg в .wav
+audio = AudioSegment.from_ogg(ogg_path)
+audio.export(wav_path, format="wav")
+
+# Транскрибируем аудиофайл
+result = model.transcribe(wav_path)
+
+# Записываем результат в текстовый файл
+with open(txt_path, 'w', encoding='utf-8') as f:
+f.write(filename[:-4] + ': \n"' + result["text"] + '"\n')
 ```
 
 Make sure to refer to the [documentation](https://github.com/yasaxil) for detailed instructions and additional examples.
