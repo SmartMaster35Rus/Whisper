@@ -6,10 +6,10 @@ import time
 import shutil
 
 # Путь к директории с файлами
-directory = 'D:\\chankiogg\\test30'
+directory = 'D:\\chankiogg\\folder_1_500_files'
 
 # Путь к директории для обработанных файлов
-processed_dir = 'D:\\chankiogg\\Выполненные'
+processed_dir = 'D:\\chankiogg\\folder_1_500_files\\Success'
 os.makedirs(processed_dir, exist_ok=True)
 
 # Получаем список всех .ogg файлов в директории
@@ -32,7 +32,8 @@ for filename in tqdm(ogg_files, desc="Processing files", unit="file"):
     audio.export(wav_path, format="wav")
     
     # Выполняем распознавание речи с помощью whisper
-    result = subprocess.run(['whisper', '--model', 'large-v2', wav_path], stdout=subprocess.PIPE)
+    result = subprocess.run(['whisper', '--model', 'large-v3', '--fp16', '--device', 'cuda', wav_path], stdout=subprocess.PIPE)
+    # Изменили аргументы командной строки для использования CUDA и FP16
     
     # Записываем результат в текстовый файл
     with open(txt_path, 'w', encoding='utf-8') as f:
@@ -56,7 +57,7 @@ source_directory = os.path.dirname(os.path.realpath(__file__))  # это пут�
 files = os.listdir(source_directory)
 
 # Определяем список расширений файлов, которые нужно переместить
-extensions = ['.json', '.srt', '.tsv', '.txt']
+extensions = ['.txt'] 
 
 # Перебираем все файлы
 for file in files:
