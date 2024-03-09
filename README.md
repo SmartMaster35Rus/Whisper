@@ -46,22 +46,36 @@ Here's how you can use Whisper Large-v3 in your projects:
 ```python
 import whisper
 
-# Получаем список всех файлов .ogg в папке
-ogg_files = [f for f in os.listdir(directory) if f.endswith(".ogg")]
+# Функция для обработки пакета файлов
+def process_files(files, input_dir, output_dir):
+    for filename in files:
+        try:
+            # Путь к исходному файлу .ogg
+            ogg_path = os.path.join(input_dir, filename)
+            # Путь к конвертированному файлу .wav
+            wav_path = os.path.join(output_dir, filename[:-4] + '.wav')
+            # Путь к текстовому файлу с результатом
+            txt_path = os.path.join(output_dir, filename[:-4] + '.txt')
 
-# Загружаем базовую модель
-model = whisper.load_model("large-v3")
+            with torch.no_grad():
 
-# Конвертируем .ogg в .wav
-audio = AudioSegment.from_ogg(ogg_path)
-audio.export(wav_path, format="wav")
+# Инициализация модели Whisper на GPU
+model_id = "openai/whisper-large-v3"
+model = AutoModelForSpeechSeq2Seq.from_pretrained(model_id)
+processor = AutoProcessor.from_pretrained(model_id)
 
-# Транскрибируем аудиофайл
-result = model.transcribe(wav_path)
+            with torch.no_grad():
 
-# Записываем результат в текстовый файл
-with open(txt_path, 'w', encoding='utf-8') as f:
-f.write(filename[:-4] + ': \n"' + result["text"] + '"\n')
+                # Конвертируем .ogg в .wav
+                audio = AudioSegment.from_ogg(ogg_path)
+                audio.export(wav_path, format="wav")
+
+                # Транскрибируем аудиофайл
+                result = pipe(wav_path)
+
+                # Записываем результат в текстовый файл
+                with open(txt_path, 'w', encoding='utf-8') as f:
+                    f.write(filename[:-4] + ': \n"' + result["text"] + '"\n')
 ```
 
 Make sure to refer to the [documentation](https://github.com/yasaxil) for detailed instructions and additional examples.
@@ -70,17 +84,17 @@ Make sure to refer to the [documentation](https://github.com/yasaxil) for detail
 
 ```python
 # Настройки конфигурации для модели whisper
-whisper_config = {
-    "model": "large-v3",
-    "temperature": 0,
-    "patience": 10,
-    "suppress_tokens": -1,
-    "temperature_increment_on_fallback": 0.2,
-    "compression_ratio_threshold": 2.4,
-    "logprob_threshold": -1,
-    "no_speech_threshold": 0.6,
-    "fp16": False
-}
+pipe = pipeline(
+    "automatic-speech-recognition",
+    model=model,
+    tokenizer=processor.tokenizer,
+    feature_extractor=processor.feature_extractor,
+    max_new_tokens=128,
+    chunk_length_s=30,
+    batch_size=16,
+    return_timestamps=True,
+    device="cuda:0",
+)
 ```
 ## License
 
