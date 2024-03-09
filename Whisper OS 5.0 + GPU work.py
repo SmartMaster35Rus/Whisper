@@ -63,8 +63,15 @@ pipe = pipeline(
 batch_size = 10
 num_batches = (len(ogg_files) + batch_size - 1) // batch_size
 
+start_time = time.time()  # Засекаем время выполнения скрипта
+
 for i in tqdm(range(num_batches), desc="Обработка пакетов", unit="пакет"):
     batch_files = ogg_files[i * batch_size: (i + 1) * batch_size]
     process_files(batch_files, input_directory, output_directory)
 
-print("Обработка завершена.")
+end_time = time.time()  # Засекаем время окончания выполнения скрипта
+
+total_time = end_time - start_time  # Вычисляем общее время работы скрипта
+num_files = len(ogg_files)  # Количество обработанных файлов
+
+print(f"Обработка завершена. Время работы: {total_time:.2f} секунд. Обработано файлов: {num_files}")
