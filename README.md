@@ -30,6 +30,8 @@ To use Whisper Large-v3, follow these steps:
 
 "pip install --upgrade --no-deps --force-reinstall git+https://github.com/openai/whisper.git"
 
+"pip install torch==1.10.0+cu113 torchvision==0.11.1+cu113 torchaudio==0.10.0+cu113 -f https://download.pytorch.org/whl/torch_stable.html"
+
 "pip install setuptools-rust"
 
 1. Clone the repository to your local machine.
