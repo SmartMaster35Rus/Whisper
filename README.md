@@ -20,6 +20,7 @@
 - Библиотеки: Установите необходимые библиотеки, запустив следующую команду в командной строке/терминале:
   ```
   pip install torch transformers pydub datasets tqdm
+  pip install torch==1.10.0+cu113 torchvision==0.11.1+cu113 torchaudio==0.10.0+cu113 -f https://download.pytorch.org/whl/torch_stable.html
   ```
 
 - Модель Whisper: Для использования модели Whisper Large-v3, необходимо иметь доступ к данной модели. Вы можете получить ее из репозитория моделей Hugging Face или другого источника.
