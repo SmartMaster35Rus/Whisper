@@ -1,105 +1,76 @@
-# Whisper Large-v3
+#Whisper Ai | Large-v3
 
-This repository is dedicated to Whisper Large-v3, a powerful tool for high-quality conversion of audio messages to text. It provides unique settings and configurations to ensure accurate and precise conversion of *.ogg or *.mp3 files to *.text format.
+## Описание скрипта для GitHub - README.md
 
-|  Configuration | Specifications	Detail | 
-|--------------------|--------------------|
-| Processor  | Intel® Core™ i9-14900KF @3.20Ghz  |
-| Memory  | 128 GB DDR4 4200 Mhz (32+32+32+32)  |
-| Disk  | M.2 PCIe SSD Samsung SSD 980 PRO 1000Gb  |
-| Disk  | M.2 PCIe SSD XPG GAMMIX S11 Pro 1000Gb |
-| Discrete Graphics  | NVIDIA GeForce RTX 4090 24GB  |
-| Whisper | Large-v3  |
-| CudaToolkit | ver.12.3  |
+### Описание
+Данный скрипт представляет собой инструмент для обработки аудиофайлов формата .ogg и получения транскрипции речи с использованием модели Whisper. Он автоматически конвертирует файлы .ogg в .wav, выполняет распознавание речи и сохраняет результаты в текстовые файлы.
 
+### Условия выполнения
+Для успешного выполнения скрипта необходимо удовлетворять следующим условиям:
+- Установленный Python 3.x.
+- Установлены необходимые библиотеки: torch, transformers, pydub, datasets, tqdm.
+- Доступ к модели Whisper (Whisper Large-v3) и процессору AutoProcessor.
+- Наличие аудиофайлов формата .ogg, которые требуется обработать.
 
-## Features
+### Установки
+Для работы скрипта необходимо установить следующие компоненты и зависимости:
 
-- Advanced audio processing algorithms for superior quality transcription
-- Customizable settings to fine-tune the conversion process
-- Support for various audio formats, including *.ogg and *.mp3
-- Easy integration with existing systems and applications
+- Python 3.x: Скачайте и установите Python 3.x с официального веб-сайта Python (https://www.python.org).
 
-## Installation
+- Библиотеки: Установите необходимые библиотеки, запустив следующую команду в командной строке/терминале:
+  ```
+  pip install torch transformers pydub datasets tqdm
+  ```
 
-To use Whisper Large-v3, follow these steps:
+- Модель Whisper: Для использования модели Whisper Large-v3, необходимо иметь доступ к данной модели. Вы можете получить ее из репозитория моделей Hugging Face или другого источника.
 
-"pip install -U openai-whisper"
+- CudaToolkit: Если вы планируете использовать GPU для обработки аудиофайлов на модели Whisper, убедитесь, что у вас установлена версия CudaToolkit 12.3 или совместимая с вашей версией GPU.
 
-"pip install git+https://github.com/openai/whisper.git "
+### Характеристики ПК
+Данный скрипт был разработан и протестирован на следующей конфигурации ПК:
 
-"pip install --upgrade --no-deps --force-reinstall git+https://github.com/openai/whisper.git"
+|  Конфигурация  |  Детали спецификаций  |
+|----------------|----------------------|
+|  Процессор     |  Intel® Core™ i9-14900KF @3.20Ghz  |
+|  Память        |  128 ГБ DDR4 4200 МГц (32+32+32+32)  |
+|  Диск          |  M.2 PCIe SSD Samsung SSD 980 PRO 1000 ГБ  |
+|  Диск          |  M.2 PCIe SSD XPG GAMMIX S11 Pro 1000 ГБ |
+|  Дискретная графика  |  NVIDIA GeForce RTX 4090 24 ГБ  |
+|  Модель Whisper  |  Whisper Large-v3  |
+|  CudaToolkit   |  ver.12.3  |
 
-"pip install torch==1.10.0+cu113 torchvision==0.11.1+cu113 torchaudio==0.10.0+cu113 -f https://download.pytorch.org/whl/torch_stable.html"
+**Примечание:** Указанные характеристики ПК являются примером и предоставлены для информационных целей. Реальные характеристики вашего ПК могут отличаться.
 
-"pip install setuptools-rust"
+### Использование
+1. Убедитесь, что все необходимые зависимости установлены и доступна модель Whisper Large-v3.
+2. Поместите аудиофайлы формата .ogg, которые требуется обработать, в папку, указанную в переменной `input_directory` в скрипте.
+3. Запустите скрипт и следуйте инструкциям, чтобы указать путь к папке с файлами.
+4. Результаты обработки будут сохранены в папке `success`, созданной внутри папки с файлами исходных аудиофайлов. Каждый обработанный файл будет иметь соответствующий текстовый файл с результатом транскрипции.
 
-1. Clone the repository to your local machine.
-2. Install the required dependencies.
-3. Configure the settings according to your specific requirements.
-4. Run the application and start converting audio messages to text.
+### Пример
+Пример использования скрипта:
 
-## Usage
-
-Here's how you can use Whisper Large-v3 in your projects:
-
-```python
-import whisper
-
-# Функция для обработки пакета файлов
-def process_files(files, input_dir, output_dir):
-    for filename in files:
-        try:
-            # Путь к исходному файлу .ogg
-            ogg_path = os.path.join(input_dir, filename)
-            # Путь к конвертированному файлу .wav
-            wav_path = os.path.join(output_dir, filename[:-4] + '.wav')
-            # Путь к текстовому файлу с результатом
-            txt_path = os.path.join(output_dir, filename[:-4] + '.txt')
-
-            with torch.no_grad():
-
-# Инициализация модели Whisper на GPU
-model_id = "openai/whisper-large-v3"
-model = AutoModelForSpeechSeq2Seq.from_pretrained(model_id)
-processor = AutoProcessor.from_pretrained(model_id)
-
-            with torch.no_grad():
-
-                # Конвертируем .ogg в .wav
-                audio = AudioSegment.from_ogg(ogg_path)
-                audio.export(wav_path, format="wav")
-
-                # Транскрибируем аудиофайл
-                result = pipe(wav_path)
-
-                # Записываем результат в текстовый файл
-                with open(txt_path, 'w', encoding='utf-8') as f:
-                    f.write(filename[:-4] + ': \n"' + result["text"] + '"\n')
+1.```bash
+$ python script.py
 ```
 
-Make sure to refer to the [documentation](https://github.com/yasaxil) for detailed instructions and additional examples.
+2. Введите путь к папке с аудиофайлами: `/путь/к/папке/с/аудиофайлами`
 
-## My optimal setting whisper config
+3. Подождите, пока скрипт обработает все аудиофайлы.
 
-```python
-# Настройки конфигурации для модели whisper
-pipe = pipeline(
-    "automatic-speech-recognition",
-    model=model,
-    tokenizer=processor.tokenizer,
-    feature_extractor=processor.feature_extractor,
-    max_new_tokens=128,
-    chunk_length_s=30,
-    batch_size=16,
-    return_timestamps=True,
-    device="cuda:0",
-)
-```
-## License
+4. Результаты будут сохранены в папке `/путь/к/папке/с/аудиофайлами/success`.
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). For more information, please see the [LICENSE](LICENSE) file.
+### Важно!
+Убедитесь, что вы имеете все необходимые права доступа и разрешения для работы с аудиофайлами и сохранения результатов транскрипции.
 
-## Author
+### Лицензия
+Этот скрипт распространяется под лицензией [MIT License](https://github.com/yasaxil/Whisper/blob/main/LICENSE.md).
 
-This repository is maintained by [yasaxil](https://github.com/yasaxil). If you have any questions or suggestions, feel free to reach out.
+### Автор
+Автор скрипта: SmartMaster35Rus
+
+### Вклад
+Если вы хотите внести свой вклад в развитие этого скрипта, пожалуйста, создайте pull request или свяжитесь с автором для обсуждения возможных улучшений.
+
+### Обратная связь
+Если у вас есть вопросы, предложения или обратная связь по скрипту, пожалуйста, свяжитесь с автором по следующему адресу электронной почты: SmartMaster35Rus@yandex.ru.
