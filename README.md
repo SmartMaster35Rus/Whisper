@@ -73,4 +73,4 @@ $ python script.py
 ```
 
 # Лицензия #
-Этот скрипт распространяется под лицензией [MIT License](https://github.com/yasaxil/Whisper/blob/main/LICENSE.md).
+Этот скрипт распространяется под лицензией [MIT License]([https://github.com/SmartMaster35Rus/Whisper/blob/main/LICENSE.md]).
