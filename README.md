@@ -2,6 +2,17 @@
 
 This repository is dedicated to Whisper Large-v3, a powerful tool for high-quality conversion of audio messages to text. It provides unique settings and configurations to ensure accurate and precise conversion of *.ogg or *.mp3 files to *.text format.
 
+|  Configuration | Specifications	Detail | 
+|--------------------|--------------------|
+| Processor  | Intel® Core™ i9-14900KF @3.20Ghz  |
+| Memory  | 128 GB DDR4 4200 Mhz (32+32+32+32)  |
+| Disk  | M.2 PCIe SSD Samsung SSD 980 PRO 1000Gb  |
+| Disk  | M.2 PCIe SSD XPG GAMMIX S11 Pro 1000Gb |
+| Discrete Graphics  | NVIDIA GeForce RTX 4090 24GB  |
+| Whisper | Large-v3  |
+| CudaToolkit | ver.12.3  |
+
+
 ## Features
 
 - Advanced audio processing algorithms for superior quality transcription
