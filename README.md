@@ -1,4 +1,4 @@
-#Whisper Ai | Large-v3
+# Whisper Ai | Large-v3 #
 
 ## Описание скрипта для GitHub - README.md
 
@@ -63,9 +63,6 @@ $ python script.py
 ### Важно!
 Убедитесь, что вы имеете все необходимые права доступа и разрешения для работы с аудиофайлами и сохранения результатов транскрипции.
 
-### Лицензия
-Этот скрипт распространяется под лицензией [MIT License](https://github.com/yasaxil/Whisper/blob/main/LICENSE.md).
-
 ### Автор
 Автор скрипта: SmartMaster35Rus
 
@@ -74,3 +71,7 @@ $ python script.py
 
 ### Обратная связь
 Если у вас есть вопросы, предложения или обратная связь по скрипту, пожалуйста, свяжитесь с автором по следующему адресу электронной почты: SmartMaster35Rus@yandex.ru.
+```
+
+# Лицензия #
+Этот скрипт распространяется под лицензией [MIT License](https://github.com/yasaxil/Whisper/blob/main/LICENSE.md).
