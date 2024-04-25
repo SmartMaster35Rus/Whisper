@@ -1,17 +1,21 @@
 import torch
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 from pydub import AudioSegment
-from datasets import load_dataset
 import time
 import os
 from tqdm import tqdm
 
+# Проверка доступности CUDA
+if torch.cuda.is_available():
+    print("Скрипт запущен на CUDA.")
+else:
+    print("CUDA не доступна.")
+
 # Функция для обработки пакета файлов
-def process_files(files, input_dir, output_dir):
-    for filename in files:
+def process_files(files, output_dir):
+    for filepath in files:
         try:
-            # Путь к исходному файлу .ogg
-            ogg_path = os.path.join(input_dir, filename)
+            filename = os.path.basename(filepath)
             # Путь к конвертированному файлу .wav
             wav_path = os.path.join(output_dir, filename[:-4] + '.wav')
             # Путь к текстовому файлу с результатом
@@ -19,7 +23,7 @@ def process_files(files, input_dir, output_dir):
 
             with torch.no_grad():
                 # Конвертируем .ogg в .wav
-                audio = AudioSegment.from_ogg(ogg_path)
+                audio = AudioSegment.from_file(filepath)
                 audio.export(wav_path, format="wav")
 
                 # Транскрибируем аудиофайл
@@ -37,11 +41,16 @@ def process_files(files, input_dir, output_dir):
 input_directory = input("Введите путь к папке с файлами: ")
 
 # Создание папки для обработанных файлов
-output_directory = os.path.join(input_directory, 'success')
+output_directory = os.path.join(input_directory, 'processed')
 os.makedirs(output_directory, exist_ok=True)
 
-# Получаем список всех файлов .ogg в папке
-ogg_files = [f for f in os.listdir(input_directory) if f.endswith(".ogg")]
+# Рекурсивный поиск всех файлов .ogg в папке и подпапках
+ogg_files = []
+for root, dirs, files in os.walk(input_directory):
+    for file in files:
+        if file.endswith(".ogg"):
+            full_path = os.path.join(root, file)
+            ogg_files.append(full_path)
 
 # Инициализация модели Whisper на GPU
 model_id = "openai/whisper-large-v3"
@@ -67,7 +76,7 @@ start_time = time.time()  # Засекаем время выполнения с�
 
 for i in tqdm(range(num_batches), desc="Обработка пакетов", unit="пакет"):
     batch_files = ogg_files[i * batch_size: (i + 1) * batch_size]
-    process_files(batch_files, input_directory, output_directory)
+    process_files(batch_files, output_directory)
 
 end_time = time.time()  # Засекаем время окончания выполнения скрипта
 
