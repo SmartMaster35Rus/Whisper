@@ -25,7 +25,7 @@
   Для успешного выполнения скрипта необходимо удовлетворять следующим условиям:
   
     - Установленный Python 3.x.
-    - Установлены необходимые библиотеки: torch, transformers, pydub, datasets, tqdm.
+    - Установлены необходимые библиотеки: torch, transformers, pydub, datasets, tqdm, moviepy
     - Доступ к модели Whisper (Whisper Large-v3) и процессору AutoProcessor.
     - Наличие аудиофайлов формата .ogg, которые требуется обработать.
     - Miniconda
@@ -50,7 +50,7 @@
 conda create -n tf
 conda activate tf
 
-pip install torch transformers pydub datasets tqdm
+pip install torch transformers pydub datasets tqdm moviepy
 pip install torch==1.10.0+cu113 torchvision==0.11.1+cu113 torchaudio==0.10.0+cu113 -f https://download.pytorch.org/whl/torch_stable.html
 pip install torch --upgrade --index-url https://download.pytorch.org/whl/cu121
 python -m pip install "tensorflow<2.11" ##Верссии tensorflow выше 2.10 не работают на Windows поэтому ставим версию ниже 2.11
