@@ -1,5 +1,10 @@
 # Whisper Ai | Large-v3 #
 
+- [Whisper audio transcribe ](https://github.com/SmartMaster35Rus/Whisper/blob/main/Whisper%20OS%205.0%20%2B%20GPU%20work.py)
+
+- [Whisper 2.0 audio + video transcribe ](https://github.com/SmartMaster35Rus/Whisper/blob/main/Whisper%20OS%205.0%20%2B%20GPU%20work%202.0.py) 
+
+
 ### Характеристики ПК
 Данный скрипт был разработан и протестирован на следующей конфигурации ПК:
 
