@@ -52,8 +52,8 @@
 **Для изоляции проекта рекомендуется создать новое виртуальное окружение. Выполните следующие команды в **Anaconda Powershell Prompt (miniconda3)** :**
 
 ```shell
-conda create -n tf
-conda activate tf
+conda create -n whisper
+conda activate whisper
 
 pip install torch transformers pydub datasets tqdm moviepy
 pip install torch==1.10.0+cu113 torchvision==0.11.1+cu113 torchaudio==0.10.0+cu113 -f https://download.pytorch.org/whl/torch_stable.html
@@ -68,7 +68,7 @@ pip install jupyter notebook
 Для использования GPU в TensorFlow, убедитесь, что настройка выполнена корректно. Выполните следующую команду:
 
 ```python
-  python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+  python -c "import tensorflow as whisper; print(whisper.config.list_physical_devices('GPU'))"
 ```  
   если все настроено правильно вы получаете ответ :
   
@@ -80,18 +80,18 @@ pip install jupyter notebook
 
 Запустите Jupyter Notebook, чтобы проверить доступность GPU. Введите следующую команду в терминале:
   ```python
-  conda activate tf ##активируем наше виртуальное окружение 
+  conda activate whisper ##активируем наше виртуальное окружение 
   pip install ipykernel
-  python -m ipykernel install --user --name=tf ##Добавляем наше окружение в Jupyter Notebook
+  python -m ipykernel install --user --name=whisper ##Добавляем наше окружение в Jupyter Notebook
   jupyter notebook ##Откроется браузер сос тратовой страницей Jupyter Notebook 
   ```
 
-Выберите виртуальное окружение tf (сверху справа) в интерфейсе Jupyter Notebook и перейдите в него. 
+Выберите виртуальное окружение whisper (сверху справа) в интерфейсе Jupyter Notebook и перейдите в него. 
 Вводим команду:
 
 ```python
-import tensorflow as tf
-gpus = tf.config.list_physical_devices('GPU')
+import tensorflow as whisper
+gpus = whisper.config.list_physical_devices('GPU')
 print ( gpus )
 
 ```
