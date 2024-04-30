@@ -10,8 +10,7 @@ import streamlit as st
 # Инициализация логирования
 def setup_logging(output_dir):
     log_filename = os.path.join(output_dir, 'processing.log')
-    if not logging.getLogger().hasHandlers():
-        logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     return log_filename
 
 def extract_audio_from_video(video_path, audio_path):
