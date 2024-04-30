@@ -62,7 +62,7 @@ pipe = pipeline(
     device="cuda:0"
 )
 
-st.title('Whisper GUI 2.1')
+st.title('Whisper GUI 3.0')
 
 input_directory = st.text_input("Введите путь к папке с файлами:")
 if input_directory:
