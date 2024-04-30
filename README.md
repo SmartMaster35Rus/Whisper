@@ -4,6 +4,8 @@
 
 - [Whisper 2.0 audio + video transcribe ](https://github.com/SmartMaster35Rus/Whisper/blob/main/Whisper%20OS%205.0%20%2B%20GPU%20work%202.0.py) 
 
+- [Whisper 3.0 audio + video transcribe + GUI ](https://github.com/SmartMaster35Rus/Whisper/tree/main/Whisper%203.0%20%2B%20GUI)
+
 
 ### Характеристики ПК
 Данный скрипт был разработан и протестирован на следующей конфигурации ПК:
