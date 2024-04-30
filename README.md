@@ -52,7 +52,7 @@
 **Для изоляции проекта рекомендуется создать новое виртуальное окружение. Выполните следующие команды в **Anaconda Powershell Prompt (miniconda3)** :**
 
 ```shell
-conda create -n whisper
+conda create -n whisper python=3.9 ##очень важно именно версия 3.9
 conda activate whisper
 
 pip install torch transformers pydub datasets tqdm moviepy
