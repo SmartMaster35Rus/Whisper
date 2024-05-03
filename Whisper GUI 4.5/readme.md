@@ -47,4 +47,5 @@ SmartMaster35Rus
 
 ## Лицензия
 
-### MIT
+Этот проект лицензирован под лицензией MIT. Подробную информацию смотрите в файле лицензии по следующей ссылке: [LICENSE](https://github.com/SmartMaster35Rus/Whisper/blob/main/Whisper%20GUI%204.5/LICENSE).
+
