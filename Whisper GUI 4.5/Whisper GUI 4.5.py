@@ -4,9 +4,15 @@ import subprocess
 import time
 import tracemalloc
 import streamlit as st
-
+import uuid
 from pydub import AudioSegment
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+
+# Настройка модели для распознавания речи
+model_id = "openai/whisper-large-v3"
+model = AutoModelForSpeechSeq2Seq.from_pretrained(model_id)
+processor = AutoProcessor.from_pretrained(model_id)
+pipe = pipeline("automatic-speech-recognition", model=model, tokenizer=processor.tokenizer, feature_extractor=processor.feature_extractor, device="cuda:0")
 
 def create_output_folder(base_path, folder_name):
     """Создать папку для вывода обработанных файлов."""
@@ -27,7 +33,7 @@ def get_base_directory(option, directory_path, file_list_path):
         return os.path.dirname(file_list_path)
     elif option == 'Из директории' and directory_path:
         return directory_path
-    return None  # Если не указан путь, возвращаем None
+    return None
 
 def get_files_from_directory(directory_path, file_types):
     """Получить список файлов определенных типов из директории."""
@@ -66,20 +72,29 @@ def extract_audio_from_video(video_path, output_audio_path):
     """Извлечь аудио из видео файла."""
     command = f"ffmpeg -y -i \"{video_path}\" -b:a 192k -vn \"{output_audio_path}\""
     subprocess.call(command, shell=True)
-    
+
 def process_audio(filepath, output_dir):
     filename = os.path.basename(filepath)
+    base_filename, ext = os.path.splitext(filename)
+    txt_path = os.path.join(output_dir, base_filename + '.txt')
+
+    # Проверяем, существует ли уже такой файл, и добавляем уникальный идентификатор
+    if os.path.exists(txt_path):
+        unique_id = uuid.uuid4().hex[:8]  # Генерация короткого уникального идентификатора
+        txt_path = os.path.join(output_dir, f"{base_filename}_{unique_id}.txt")
+
     try:
         audio = AudioSegment.from_file(filepath)
         temp_audio_path = os.path.join(output_dir, f"temp_{filename}.wav")
         audio.export(temp_audio_path, format="wav")
         result = pipe(temp_audio_path)
         text = result["text"]
-        txt_path = os.path.join(output_dir, filename[:-4] + '.txt')
+
         with open(txt_path, 'w', encoding='utf-8') as f:
             f.write(text)
+
         os.remove(temp_audio_path)
-        logging.info(f"Файл {filename} успешно обработан.")
+        logging.info(f"Файл {filename} успешно обработан как {os.path.basename(txt_path)}.")
     except Exception as e:
         logging.error(f"Ошибка при обработке файла {filename}: {str(e)}")
 
@@ -87,21 +102,10 @@ def kill_process():
     """Завершение процесса."""
     subprocess.call(["taskkill", "/F", "/T", "/PID", str(os.getppid())])
 
-model_id = "openai/whisper-large-v3"
-model = AutoModelForSpeechSeq2Seq.from_pretrained(model_id)
-processor = AutoProcessor.from_pretrained(model_id)
-pipe = pipeline(
-    "automatic-speech-recognition",
-    model=model,
-    tokenizer=processor.tokenizer,
-    feature_extractor=processor.feature_extractor,
-    device="cuda:0"
-)
-
-st.title('Whisper Ai Web GUI 4.5.1b')
+st.title('Whisper Ai Web GUI 4.6')
 
 option = st.selectbox('Выберите способ указания файлов:', ('Из директории', 'Из файла со списком'))
-file_types = st.multiselect('Выберите типы файлов для обработки:', ['mp4', 'ogg', 'mp3'], default=['mp4', 'ogg','mp3'])
+file_types = st.multiselect('Выберите типы файлов для обработки:', ['mp4', 'ogg', 'mp3'], default=['mp4', 'ogg', 'mp3'])
 directory_path = st.text_input("Введите путь к директории:")
 file_list_path = st.text_input("Введите путь к файлу со списком путей:")
 folder_name = st.text_input("Введите имя папки для сохранения обработанных файлов:")
