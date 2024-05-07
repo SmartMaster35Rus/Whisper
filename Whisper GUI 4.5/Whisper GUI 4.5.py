@@ -8,23 +8,52 @@ import streamlit as st
 from pydub import AudioSegment
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 
-def create_output_folder(directory_path, folder_name):
-    """ Создает папку для вывода результатов в указанной директории. """
-    output_dir = os.path.join(directory_path, folder_name)
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    return output_dir
+def create_output_folder(base_path, folder_name):
+    """Создать папку для вывода обработанных файлов."""
+    output_path = os.path.join(base_path, folder_name)
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+    return output_path
 
 def setup_logging(output_dir):
-    """ Настройка логирования в указанную директорию. """
-    log_filename = os.path.join(output_dir, "processing.log")
-    logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    """Настройка логирования в файл."""
+    log_filename = os.path.join(output_dir, 'processing.log')
+    logging.basicConfig(filename=log_filename, level=logging.INFO)
     return log_filename
 
-def extract_audio_from_video(video_path, output_audio_path):
-    command = f"ffmpeg -i {video_path} -ab 160k -ac 2 -ar 44100 -vn {output_audio_path}"
-    subprocess.call(command, shell=True)
+def get_files_from_directory(directory_path, file_types):
+    """Получить список файлов определенных типов из директории."""
+    files = []
+    for root, dirs, files_in_dir in os.walk(directory_path):
+        for file in files_in_dir:
+            if any(file.endswith(f".{ext}") for ext in file_types):
+                files.append(os.path.join(root, file))
+    return files
 
+def get_processed_files(output_dir):
+    """Получить список уже обработанных файлов в указанной папке."""
+    processed_files = set()
+    for root, dirs, files in os.walk(output_dir):
+        for file in files:
+            if file.endswith('.txt'):
+                processed_file_name = os.path.splitext(os.path.basename(file))[0]
+                processed_files.add(processed_file_name)
+    return processed_files
+
+def filter_unprocessed_files(files_to_process, processed_files):
+    """Исключить уже обработанные файлы из списка файлов для обработки."""
+    unprocessed_files = []
+    for file in files_to_process:
+        base_name = os.path.splitext(os.path.basename(file))[0]
+        if base_name not in processed_files:
+            unprocessed_files.append(file)
+    return unprocessed_files
+
+def extract_audio_from_video(video_path, output_audio_path):
+    """Извлечь аудио из видео файла."""
+    command = f"ffmpeg -y -i \"{video_path}\" -b:a 192k -vn \"{output_audio_path}\""
+    subprocess.call(command, shell=True)
+    
 def process_audio(filepath, output_dir):
     filename = os.path.basename(filepath)
     try:
@@ -41,44 +70,8 @@ def process_audio(filepath, output_dir):
     except Exception as e:
         logging.error(f"Ошибка при обработке файла {filename}: {str(e)}")
 
-def process_video(filepath, output_dir):
-    try:
-        audio_filepath = os.path.splitext(filepath)[0] + '.wav'
-        extract_audio_from_video(filepath, audio_filepath)
-        process_audio(audio_filepath, output_dir)
-    except Exception as e:
-        logging.error(f"Ошибка при обработке видео файла {os.path.basename(filepath)}: {str(e)}")
-
-def get_files_from_directory(directory_path, file_types):
-    """ Получение списка файлов определенных типов из директории. """
-    files = []
-    for root, dirs, files_in_dir in os.walk(directory_path):
-        for file in files_in_dir:
-            if any(file.endswith(f".{ext}") for ext in file_types):
-                files.append(os.path.join(root, file))
-    return files
-
-def get_processed_files(output_dir):
-    """ Получить список уже обработанных файлов в указанной папке. """
-    processed_files = set()
-    for root, dirs, files in os.walk(output_dir):
-        for file in files:
-            if file.endswith('.txt'):
-                processed_file_name = os.path.splitext(os.path.basename(file))[0]
-                processed_files.add(processed_file_name)
-    return processed_files
-
-def filter_unprocessed_files(files_to_process, processed_files):
-    """ Исключить уже обработанные файлы из списка файлов для обработки. """
-    unprocessed_files = []
-    for file in files_to_process:
-        base_name = os.path.splitext(os.path.basename(file))[0]
-        if base_name not in processed_files:
-            unprocessed_files.append(file)
-    return unprocessed_files
-
 def kill_process():
-    """ Завершение процесса. """
+    """Завершение процесса."""
     subprocess.call(["taskkill", "/F", "/T", "/PID", str(os.getppid())])
 
 model_id = "openai/whisper-large-v3"
@@ -92,10 +85,10 @@ pipe = pipeline(
     device="cuda:0"
 )
 
-st.title('Whisper Ai Web GUI 4.2')
+st.title('Whisper Ai Web GUI 4.5.1b')
 
 option = st.selectbox('Выберите способ указания файлов:', ('Из директории', 'Из файла со списком'))
-file_types = st.multiselect('Выберите типы файлов для обработки:', ['mp4', 'ogg'], default=['mp4', 'ogg'])
+file_types = st.multiselect('Выберите типы файлов для обработки:', ['mp4', 'ogg', 'mp3'], default=['mp4', 'ogg'])
 directory_path = st.text_input("Введите путь к директории:")
 folder_name = st.text_input("Введите имя папки для сохранения обработанных файлов:")
 process_button = st.button('Обработать файлы')
@@ -118,10 +111,12 @@ if process_button and directory_path and folder_name:
         file_size = os.path.getsize(filepath)
         file_size_mb = file_size / (1024 * 1024)
         processed_size_mb += file_size_mb
-        if filepath.endswith(".ogg"):
+        if filepath.endswith(".mp4"):
+            audio_filepath = os.path.splitext(filepath)[0] + '.mp3'
+            extract_audio_from_video(filepath, audio_filepath)
+            process_audio(audio_filepath, output_dir)
+        elif filepath.endswith(".mp3") or filepath.endswith(".ogg"):
             process_audio(filepath, output_dir)
-        elif filepath.endswith(".mp4"):
-            process_video(filepath, output_dir)
         progress_bar.progress((i + 1) / len(files_to_process))
         status_text.text(f"Обработка файла {i+1}/{len(files_to_process)}. Обработано {processed_size_mb:.2f} MB из {total_size_mb:.2f} MB")
     end_time = time.time()
