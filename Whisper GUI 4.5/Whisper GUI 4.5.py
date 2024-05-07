@@ -88,7 +88,7 @@ pipe = pipeline(
 st.title('Whisper Ai Web GUI 4.5.1b')
 
 option = st.selectbox('Выберите способ указания файлов:', ('Из директории', 'Из файла со списком'))
-file_types = st.multiselect('Выберите типы файлов для обработки:', ['mp4', 'ogg', 'mp3'], default=['mp4', 'ogg'])
+file_types = st.multiselect('Выберите типы файлов для обработки:', ['mp4', 'ogg', 'mp3'], default=['mp4', 'ogg','mp3'])
 directory_path = st.text_input("Введите путь к директории:")
 folder_name = st.text_input("Введите имя папки для сохранения обработанных файлов:")
 process_button = st.button('Обработать файлы')
