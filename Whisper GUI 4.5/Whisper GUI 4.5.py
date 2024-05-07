@@ -18,8 +18,16 @@ def create_output_folder(base_path, folder_name):
 def setup_logging(output_dir):
     """Настройка логирования в файл."""
     log_filename = os.path.join(output_dir, 'processing.log')
-    logging.basicConfig(filename=log_filename, level=logging.INFO)
+    logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s %(levelname)s:%(message)s')
     return log_filename
+
+def get_base_directory(option, directory_path, file_list_path):
+    """Определение базовой директории для создания папки вывода и лог-файла."""
+    if option == 'Из файла со списком' and file_list_path:
+        return os.path.dirname(file_list_path)
+    elif option == 'Из директории' and directory_path:
+        return directory_path
+    return None  # Если не указан путь, возвращаем None
 
 def get_files_from_directory(directory_path, file_types):
     """Получить список файлов определенных типов из директории."""
@@ -29,6 +37,11 @@ def get_files_from_directory(directory_path, file_types):
             if any(file.endswith(f".{ext}") for ext in file_types):
                 files.append(os.path.join(root, file))
     return files
+
+def get_files_from_list(file_path):
+    """Чтение списка файлов из текстового файла."""
+    with open(file_path, 'r', encoding='utf-8') as file:
+        return [line.strip() for line in file if line.strip()]
 
 def get_processed_files(output_dir):
     """Получить список уже обработанных файлов в указанной папке."""
@@ -90,40 +103,48 @@ st.title('Whisper Ai Web GUI 4.5.1b')
 option = st.selectbox('Выберите способ указания файлов:', ('Из директории', 'Из файла со списком'))
 file_types = st.multiselect('Выберите типы файлов для обработки:', ['mp4', 'ogg', 'mp3'], default=['mp4', 'ogg','mp3'])
 directory_path = st.text_input("Введите путь к директории:")
+file_list_path = st.text_input("Введите путь к файлу со списком путей:")
 folder_name = st.text_input("Введите имя папки для сохранения обработанных файлов:")
 process_button = st.button('Обработать файлы')
 
-if process_button and directory_path and folder_name:
-    output_dir = create_output_folder(directory_path, folder_name)
-    log_filename = setup_logging(output_dir)
-    
-    files_to_process = get_files_from_directory(directory_path, file_types)
-    processed_files = get_processed_files(output_dir)
-    files_to_process = filter_unprocessed_files(files_to_process, processed_files)
+if process_button and folder_name:
+    base_directory = get_base_directory(option, directory_path, file_list_path)
+    if base_directory:
+        output_dir = create_output_folder(base_directory, folder_name)
+        log_filename = setup_logging(output_dir)
+        if option == 'Из файла со списком' and file_list_path:
+            files_to_process = get_files_from_list(file_list_path)
+        elif option == 'Из директории' and directory_path:
+            files_to_process = get_files_from_directory(directory_path, file_types)
+        else:
+            files_to_process = []
 
-    total_size = sum(os.path.getsize(f) for f in files_to_process)
-    total_size_mb = total_size / (1024 * 1024)
-    processed_size_mb = 0
-    start_time = time.time()
-    progress_bar = st.progress(0)
-    status_text = st.empty()
-    for i, filepath in enumerate(files_to_process):
-        file_size = os.path.getsize(filepath)
-        file_size_mb = file_size / (1024 * 1024)
-        processed_size_mb += file_size_mb
-        if filepath.endswith(".mp4"):
-            audio_filepath = os.path.splitext(filepath)[0] + '.mp3'
-            extract_audio_from_video(filepath, audio_filepath)
-            process_audio(audio_filepath, output_dir)
-        elif filepath.endswith(".mp3") or filepath.endswith(".ogg"):
-            process_audio(filepath, output_dir)
-        progress_bar.progress((i + 1) / len(files_to_process))
-        status_text.text(f"Обработка файла {i+1}/{len(files_to_process)}. Обработано {processed_size_mb:.2f} MB из {total_size_mb:.2f} MB")
-    end_time = time.time()
-    total_time = end_time - start_time
-    num_files = len(files_to_process)
-    logging.info(f"Обработка завершена. Время работы: {total_time:.2f} секунд. Обработано файлов: {num_files}. Обработано {processed_size_mb:.2f} MB из {total_size_mb:.2f} MB")
-    st.write(f"Обработка завершена. Время работы: {total_time:.2f} секунд. Обработано файлов: {num_files}. Обработано {processed_size_mb:.2f} MB из {total_size_mb:.2f} MB")
+        processed_files = get_processed_files(output_dir)
+        files_to_process = filter_unprocessed_files(files_to_process, processed_files)
+        total_size = sum(os.path.getsize(f) for f in files_to_process)
+
+        total_size_mb = total_size / (1024 * 1024)
+        processed_size_mb = 0
+        start_time = time.time()
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        for i, filepath in enumerate(files_to_process):
+            file_size = os.path.getsize(filepath)
+            file_size_mb = file_size / (1024 * 1024)
+            processed_size_mb += file_size_mb
+            if filepath.endswith(".mp4"):
+                audio_filepath = os.path.splitext(filepath)[0] + '.mp3'
+                extract_audio_from_video(filepath, audio_filepath)
+                process_audio(audio_filepath, output_dir)
+            elif filepath.endswith(".mp3") or filepath.endswith(".ogg"):
+                process_audio(filepath, output_dir)
+            progress_bar.progress((i + 1) / len(files_to_process))
+            status_text.text(f"Обработка файла {i+1}/{len(files_to_process)}. Обработано {processed_size_mb:.2f} MB из {total_size_mb:.2f} MB")
+        end_time = time.time()
+        total_time = end_time - start_time
+        num_files = len(files_to_process)
+        logging.info(f"Обработка завершена. Время работы: {total_time:.2f} секунд. Обработано файлов: {num_files}. Обработано {processed_size_mb:.2f} MB из {total_size_mb:.2f} MB")
+        st.write(f"Обработка завершена. Время работы: {total_time:.2f} секунд. Обработано файлов: {num_files}. Обработано {processed_size_mb:.2f} MB из {total_size_mb:.2f} MB")
 
 if st.button('Завершить работу'):
     kill_process()
